@@ -214,9 +214,7 @@
         div.className = 'card';
         div.dataset.label = card.label;
         const img = document.createElement('img');
-        img.src = `${card.label.includes(' ') ? card.label : card.label.replace(/([A-Z]+)/, (_, match) => {
-          return match.length === 2 ? match[0] + match.slice(1).toLowerCase() : match;
-        })}.png`;
+        img.src = `${card.label}.png`;
         img.alt = card.label;
         div.appendChild(img);
         div.textContent = '?';
@@ -285,4 +283,3 @@
   </script>
 </body>
 </html>
-
