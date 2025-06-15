@@ -1,153 +1,306 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.2">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif&family=Avenir&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Letter Sound Match Game</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Avenir', sans-serif;
+      background: #ffffff;
+      color: #000;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #intro {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 100px;
+      padding: 20px;
+      background: #fffbe9;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    #intro h2 {
+      font-family: 'Noto Serif', serif;
+      font-size: 24px;
+      color: #e95732;
+      margin-bottom: 8px;
+    }
+
+    .level-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ffc764;
+      color: #000;
+      cursor: pointer;
+      font-family: 'Avenir', sans-serif;
+      transition: background-color 0.2s;
+    }
+
+    .level-button:hover {
+      background-color: #e47e00;
+      color: white;
+    }
+
+    #counter {
+      background: #eee;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 18px;
+      color: #000;
+      margin: 20px 0;
+    }
+
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 12px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .card {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      background: #fffbe9;
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      color: #000;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      user-select: none;
+    }
+
+    .card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .matched {
+      background: #e2f5dc;
+      border-color: #6ea560;
+      color: #2c7a4b;
+      animation: matchPop 0.4s ease;
+    }
+
+    @keyframes matchPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    #messageBox {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fffbe9;
+      border: 2px solid #3c91c9;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      font-size: 20px;
+      color: #3c91c9;
+      text-align: center;
+      z-index: 100;
+      font-family: 'Noto Serif', serif;
+    }
+
+    #playAgain {
+      margin-top: 16px;
+      padding: 8px 16px;
+      font-size: 16px;
+      background-color: #3c91c9;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #playAgain:hover {
+      background-color: #2a6e9b;
+    }
+
+    #goHome {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      padding: 6px 12px;
+      font-size: 14px;
+      background-color: #e95732;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    #goHome:hover {
+      background-color: #c84626;
+    }
   </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Letter Sound Match Game&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-family: sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>height: 100vh;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: #f5f5f5;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.game-board {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: grid;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>grid-template-columns: repeat(5, 100px);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gap: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.card {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: 100px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>height: 100px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: #fff;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 2px solid #ccc;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 24px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.matched {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: #d4edda;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-color: #28a745;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>#message {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-top: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: #333;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>#counter {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-size: 18px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="counter"&gt;Turns: 0&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="game-board" id="gameBoard"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="message"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const sounds = {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'AH': new Audio('short-a.mp3'),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'EH': new Audio('short-e.mp3'),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'IH': new Audio('short-i.mp3'),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'AW': new Audio('short-o.mp3'),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'UH': new Audio('short-u.mp3'),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'AY': new Audio('long-a.mp3'),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'EE': new Audio('long-e.mp3'),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'EYE': new Audio('long-i.mp3'),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'OH': new Audio('long-o.mp3'),</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'YOU': new Audio('long-u.mp3')</p>
-<p class="p1"><span class="Apple-converted-space">    </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>const cards = [</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'AH' }, { label: 'AH' },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'EH' }, { label: 'EH' },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'IH' }, { label: 'IH' },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'AW' }, { label: 'AW' },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'UH' }, { label: 'UH' },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'AY' }, { label: 'AY' },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'EE' }, { label: 'EE' },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'EYE' }, { label: 'EYE' },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'OH' }, { label: 'OH' },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'YOU' }, { label: 'YOU' }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>const shuffled = [...cards].sort(() =&gt; 0.5 - Math.random());</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const board = document.getElementById('gameBoard');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const counter = document.getElementById('counter');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const message = document.getElementById('message');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>let firstCardElement = null;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let secondCardElement = null;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let firstCardLabel = null;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let secondCardLabel = null;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let turns = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let matches = 0;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>shuffled.forEach(card =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const div = document.createElement('div');</p>
-<p class="p1"><span class="Apple-converted-space">      </span>div.className = 'card';</p>
-<p class="p1"><span class="Apple-converted-space">      </span>div.textContent = '?';</p>
-<p class="p1"><span class="Apple-converted-space">      </span>div.dataset.label = card.label;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>div.addEventListener('click', () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (div.classList.contains('matched') || div === firstCardElement || secondCardElement) return;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>div.textContent = div.dataset.label;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>sounds[div.dataset.label]?.play();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (!firstCardElement) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>firstCardElement = div;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>firstCardLabel = div.dataset.label;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>secondCardElement = div;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>secondCardLabel = div.dataset.label;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>turns++;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>counter.textContent = `Turns: ${turns}`;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (firstCardLabel === secondCardLabel) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>firstCardElement.classList.add('matched');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>secondCardElement.classList.add('matched');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>matches++;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (matches === cards.length / 2) {</p>
-<p class="p1"><span class="Apple-converted-space">              </span>message.textContent = "🎉 Yay Julie!”;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>firstCardElement = null;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>secondCardElement = null;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">              </span>if (firstCardElement &amp;&amp; secondCardElement) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>firstCardElement.textContent = '?';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>secondCardElement.textContent = '?';</p>
-<p class="p1"><span class="Apple-converted-space">              </span>}</p>
-<p class="p1"><span class="Apple-converted-space">              </span>firstCardElement = null;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>secondCardElement = null;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}, 1000);</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>board.appendChild(div);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+  <button id="goHome" onclick="location.reload()">Home</button>
+  <div id="intro">
+    <h2>Select Level</h2>
+    <button class="level-button" onclick="startGame(5)">Level 1 (5 pairs)</button>
+    <button class="level-button" onclick="startGame(7)">Level 2 (7 pairs)</button>
+    <button class="level-button" onclick="startGame(10)">Level 3 (10 pairs)</button>
+  </div>
+
+  <div id="counter" class="hidden">Moves: 0</div>
+  <div class="game-board hidden" id="gameBoard"></div>
+
+  <div id="messageBox">
+    <div id="message"></div>
+    <button id="playAgain">Play Again</button>
+  </div>
+
+  <script>
+    const flipSound = new Audio('flip.mp3');
+    const matchSound = new Audio('match.mp3');
+    let startTime, bestMoves = localStorage.getItem('bestMoves') || null, bestTime = localStorage.getItem('bestTime') || null;
+
+    const sounds = {
+      'AH': new Audio('short-a.mp3'),
+      'EH': new Audio('short-e.mp3'),
+      'IH': new Audio('short-i.mp3'),
+      'AW': new Audio('short-o.mp3'),
+      'UH': new Audio('short-u.mp3'),
+      'AY': new Audio('long-a.mp3'),
+      'EE': new Audio('long-e.mp3'),
+      'EYE': new Audio('long-i.mp3'),
+      'OH': new Audio('long-o.mp3'),
+      'YOU': new Audio('long-u.mp3')
+    };
+
+    const allLabels = Object.keys(sounds);
+    let board = document.getElementById('gameBoard');
+    let counter = document.getElementById('counter');
+    let message = document.getElementById('message');
+    let messageBox = document.getElementById('messageBox');
+    let playAgainBtn = document.getElementById('playAgain');
+
+    let firstCardElement, secondCardElement, firstCardLabel, secondCardLabel, turns, matches;
+
+    function startGame(pairCount) {
+      document.getElementById('intro').style.display = 'none';
+      counter.classList.remove('hidden');
+      board.classList.remove('hidden');
+      messageBox.style.display = 'none';
+      message.textContent = '';
+
+      const selectedLabels = allLabels.slice(0, pairCount);
+      const cards = selectedLabels.flatMap(label => [{ label }, { label }]);
+      const shuffled = [...cards].sort(() => 0.5 - Math.random());
+
+      board.innerHTML = '';
+      turns = 0;
+      matches = 0;
+      startTime = Date.now();
+      counter.textContent = 'Moves: 0';
+
+      shuffled.forEach(card => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.textContent = '?';
+        div.dataset.label = card.label;
+
+        div.addEventListener('click', () => {
+          if (div.classList.contains('matched') || div === firstCardElement || secondCardElement) return;
+          div.textContent = div.dataset.label;
+          sounds[div.dataset.label]?.play();
+          flipSound.currentTime = 0;
+          flipSound.play();
+
+          if (!firstCardElement) {
+            firstCardElement = div;
+            firstCardLabel = div.dataset.label;
+          } else {
+            secondCardElement = div;
+            secondCardLabel = div.dataset.label;
+            turns++;
+            counter.textContent = `Moves: ${turns}`;
+
+            if (firstCardLabel === secondCardLabel) {
+              firstCardElement.classList.add('matched');
+              secondCardElement.classList.add('matched');
+              matchSound.currentTime = 0;
+              matchSound.play();
+              matches++;
+
+              if (matches === pairCount) {
+                const endTime = Date.now();
+                const timeTaken = Math.round((endTime - startTime) / 1000);
+                let recordMsg = '';
+                if (!bestMoves || turns < bestMoves) {
+                  localStorage.setItem('bestMoves', turns);
+                  recordMsg += ' 🎯 New record for fewest moves!';
+                }
+                if (!bestTime || timeTaken < bestTime) {
+                  localStorage.setItem('bestTime', timeTaken);
+                  recordMsg += ' ⏱️ Fastest time yet!';
+                }
+                message.innerHTML = `<span style='color: #e47e00; font-weight: bold;'>🎉 Hooray!</span><br><span style='font-family: Avenir, sans-serif; color: #e47e00;'>You matched them all in ${turns} moves and ${timeTaken} seconds!</span>${recordMsg}`;
+                messageBox.style.display = 'block';
+              }
+              firstCardElement = null;
+              secondCardElement = null;
+            } else {
+              setTimeout(() => {
+                if (firstCardElement && secondCardElement) {
+                  firstCardElement.textContent = '?';
+                  secondCardElement.textContent = '?';
+                }
+                firstCardElement = null;
+                secondCardElement = null;
+              }, 1000);
+            }
+          }
+        });
+
+        board.appendChild(div);
+      });
+    }
+
+    playAgainBtn.addEventListener('click', () => {
+      document.getElementById('intro').style.display = 'flex';
+      board.classList.add('hidden');
+      counter.classList.add('hidden');
+      messageBox.style.display = 'none';
+      board.innerHTML = '';
+    });
+  </script>
 </body>
 </html>
+
