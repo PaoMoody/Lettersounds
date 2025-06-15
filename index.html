@@ -238,7 +238,7 @@
 
         div.addEventListener('click', () => {
           if (div.classList.contains('matched') || div === firstCardElement || secondCardElement) return;
-          div.textContent = div.dataset.label;
+          div.innerHTML = `<img src="images/${div.dataset.label.toLowerCase().replace('-', '')}.png" alt="${div.dataset.label}" style="max-width: 80%; max-height: 80%;" />`;
           sounds[div.dataset.label]?.play();
           flipSound.currentTime = 0;
           flipSound.play();
@@ -279,8 +279,8 @@
             } else {
               setTimeout(() => {
                 if (firstCardElement && secondCardElement) {
-                  firstCardElement.textContent = '?';
-                  secondCardElement.textContent = '?';
+                  firstCardElement.innerHTML = '?';
+                secondCardElement.innerHTML = '?';
                 }
                 firstCardElement = null;
                 secondCardElement = null;
@@ -303,4 +303,3 @@
   </script>
 </body>
 </html>
-
