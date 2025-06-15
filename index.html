@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.2">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Letter Sound Match Game&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 100vh;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #f5f5f5;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.game-board {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>grid-template-columns: repeat(5, 100px);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.card {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 100px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #fff;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 2px solid #ccc;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.matched {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #d4edda;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-color: #28a745;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#message {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-top: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #333;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#counter {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 18px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="counter"&gt;Turns: 0&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="game-board" id="gameBoard"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="message"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const sounds = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>'AH': new Audio('short-a.mp3'),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>'EH': new Audio('short-e.mp3'),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>'IH': new Audio('short-i.mp3'),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>'AW': new Audio('short-o.mp3'),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>'UH': new Audio('short-u.mp3'),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>'AY': new Audio('long-a.mp3'),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>'EE': new Audio('long-e.mp3'),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>'EYE': new Audio('long-i.mp3'),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>'OH': new Audio('long-o.mp3'),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>'YOU': new Audio('long-u.mp3')</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const cards = [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'AH' }, { label: 'AH' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'EH' }, { label: 'EH' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'IH' }, { label: 'IH' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'AW' }, { label: 'AW' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'UH' }, { label: 'UH' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'AY' }, { label: 'AY' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'EE' }, { label: 'EE' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'EYE' }, { label: 'EYE' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'OH' }, { label: 'OH' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ label: 'YOU' }, { label: 'YOU' }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const shuffled = [...cards].sort(() =&gt; 0.5 - Math.random());</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const board = document.getElementById('gameBoard');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const counter = document.getElementById('counter');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const message = document.getElementById('message');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>let firstCardElement = null;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let secondCardElement = null;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let firstCardLabel = null;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let secondCardLabel = null;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let turns = 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let matches = 0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>shuffled.forEach(card =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const div = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>div.className = 'card';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>div.textContent = '?';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>div.dataset.label = card.label;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>div.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (div.classList.contains('matched') || div === firstCardElement || secondCardElement) return;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>div.textContent = div.dataset.label;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sounds[div.dataset.label]?.play();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (!firstCardElement) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>firstCardElement = div;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>firstCardLabel = div.dataset.label;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>secondCardElement = div;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>secondCardLabel = div.dataset.label;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>turns++;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>counter.textContent = `Turns: ${turns}`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (firstCardLabel === secondCardLabel) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>firstCardElement.classList.add('matched');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>secondCardElement.classList.add('matched');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>matches++;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (matches === cards.length / 2) {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>message.textContent = "🎉 Yay Julie!”;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>firstCardElement = null;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>secondCardElement = null;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>if (firstCardElement &amp;&amp; secondCardElement) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>firstCardElement.textContent = '?';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>secondCardElement.textContent = '?';</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>firstCardElement = null;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>secondCardElement = null;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}, 1000);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>board.appendChild(div);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
