@@ -85,18 +85,31 @@
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       user-select: none;
       overflow: hidden;
+      position: relative;
     }
     .card img {
-      max-width: 100%;
-      max-height: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
       display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
-    .card.revealed img {
+    .card.revealed .front {
       display: block;
     }
-    .card.revealed::before {
-      content: '';
+    .card.revealed .back {
       display: none;
+    }
+    .card .front {
+      display: none;
+    }
+    .card .back {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .matched {
       background: #e2f5dc;
@@ -213,15 +226,23 @@
         const div = document.createElement('div');
         div.className = 'card';
         div.dataset.label = card.label;
-        const img = document.createElement('img');
-        img.src = `${card.label}.png`;
-        img.alt = card.label;
-        div.appendChild(img);
-        div.textContent = '?';
+
+        const front = document.createElement('img');
+        front.className = 'front';
+        front.src = `${card.label}.png`;
+        front.alt = card.label;
+
+        const back = document.createElement('img');
+        back.className = 'back';
+        back.src = 'card-back.png';
+        back.alt = 'Card back';
+
+        div.appendChild(front);
+        div.appendChild(back);
+
         div.addEventListener('click', () => {
           if (div.classList.contains('matched') || div === firstCardElement || secondCardElement) return;
           div.classList.add('revealed');
-          div.textContent = '';
           sounds[div.dataset.label]?.play();
           if (!firstCardElement) {
             firstCardElement = div;
@@ -260,8 +281,6 @@
                 if (firstCardElement && secondCardElement) {
                   firstCardElement.classList.remove('revealed');
                   secondCardElement.classList.remove('revealed');
-                  firstCardElement.textContent = '?';
-                  secondCardElement.textContent = '?';
                 }
                 firstCardElement = null;
                 secondCardElement = null;
