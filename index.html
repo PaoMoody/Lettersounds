@@ -238,19 +238,19 @@
 
         div.addEventListener('click', () => {
           if (div.classList.contains('matched') || div === firstCardElement || secondCardElement) return;
-           div.innerHTML = `<img src="${div.dataset.label.replace(/([A-Z])/g, (m, p1, i) => (i === 0 ? p1.toUpperCase() : ' ' + p1))}.png" alt="${div.dataset.label}" style="max-width: 80%; max-height: 80%;" />`;
-          sounds[div.dataset.label]?.play();
-          flipSound.currentTime = 0;
-          flipSound.play();
-
-          if (!firstCardElement) {
-            firstCardElement = div;
-            firstCardLabel = div.dataset.label;
-          } else {
-            secondCardElement = div;
-            secondCardLabel = div.dataset.label;
-            turns++;
-            counter.textContent = `Moves: ${turns}`;
+          const labelToImage = {
+            'AH': 'Short A.png',
+            'EH': 'Short E.png',
+            'IH': 'Short I.png',
+            'AW': 'Short O.png',
+            'UH': 'Short U.png',
+            'AY': 'Long A.png',
+            'EE': 'Long E.png',
+            'EYE': 'Long I.png',
+            'OH': 'Long O.png',
+            'YOU': 'Long U.png'
+          };
+          div.innerHTML = `<img src="${labelToImage[div.dataset.label]}" alt="${div.dataset.label}" style="max-width: 80%; max-height: 80%;" />`;
 
             if (firstCardLabel === secondCardLabel) {
               firstCardElement.classList.add('matched');
