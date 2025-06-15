@@ -7,9 +7,7 @@
   <meta charset="UTF-8">
   <title>Letter Sound Match Game</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       font-family: 'Avenir', sans-serif;
       background: #ffffff;
@@ -23,9 +21,7 @@
       min-height: 100vh;
       position: relative;
     }
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
     #intro {
       display: flex;
       flex-direction: column;
@@ -167,7 +163,6 @@
     <button id="playAgain">Play Again</button>
   </div>
   <script>
-    const flipSound = new Audio('flip.mp3');
     const matchSound = new Audio('match.mp3');
     let startTime, bestMoves = localStorage.getItem('bestMoves') || null, bestTime = localStorage.getItem('bestTime') || null;
     const sounds = {
@@ -189,6 +184,7 @@
     let messageBox = document.getElementById('messageBox');
     let playAgainBtn = document.getElementById('playAgain');
     let firstCardElement, secondCardElement, firstCardLabel, secondCardLabel, turns, matches;
+
     function startGame(pairCount) {
       document.getElementById('intro').style.display = 'none';
       counter.classList.remove('hidden');
@@ -212,8 +208,6 @@
           if (div.classList.contains('matched') || div === firstCardElement || secondCardElement) return;
           div.textContent = div.dataset.label;
           sounds[div.dataset.label]?.play();
-          flipSound.currentTime = 0;
-          flipSound.play();
           if (!firstCardElement) {
             firstCardElement = div;
             firstCardLabel = div.dataset.label;
@@ -260,6 +254,7 @@
         board.appendChild(div);
       });
     }
+
     playAgainBtn.addEventListener('click', () => {
       document.getElementById('intro').style.display = 'flex';
       board.classList.add('hidden');
