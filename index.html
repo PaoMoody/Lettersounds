@@ -6,160 +6,266 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif&family=Avenir&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <title>Letter Sound Match Game</title>
-  <style> /* CSS unchanged for brevity */ </style>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Avenir', sans-serif;
+      background: #ffffff;
+      color: #000;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      position: relative;
+    }
+    .hidden {
+      display: none;
+    }
+    #intro {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 100px;
+      padding: 20px;
+      background: #fffbe9;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    #intro h2 {
+      font-family: 'Noto Serif', serif;
+      font-size: 24px;
+      color: #e95732;
+      margin-bottom: 8px;
+    }
+    .level-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ffc764;
+      color: #000;
+      cursor: pointer;
+      font-family: 'Avenir', sans-serif;
+      transition: background-color 0.2s;
+    }
+    .level-button:hover {
+      background-color: #e47e00;
+      color: white;
+    }
+    #counter {
+      background: #eee;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 18px;
+      color: #000;
+      margin: 20px 0;
+    }
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 12px;
+      width: 100%;
+      max-width: 500px;
+    }
+    .card {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      background: #fffbe9;
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      color: #000;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      user-select: none;
+    }
+    .card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .matched {
+      background: #e2f5dc;
+      border-color: #6ea560;
+      color: #2c7a4b;
+      animation: matchPop 0.4s ease;
+    }
+    @keyframes matchPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    #messageBox {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fffbe9;
+      border: 2px solid #3c91c9;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      font-size: 20px;
+      color: #3c91c9;
+      text-align: center;
+      z-index: 100;
+      font-family: 'Noto Serif', serif;
+    }
+    #playAgain {
+      margin-top: 16px;
+      padding: 8px 16px;
+      font-size: 16px;
+      background-color: #3c91c9;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #playAgain:hover {
+      background-color: #2a6e9b;
+    }
+    #goHome {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      padding: 6px 12px;
+      font-size: 14px;
+      background-color: #e95732;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 10;
+    }
+    #goHome:hover {
+      background-color: #c84626;
+    }
+  </style>
 </head>
 <body>
   <button id="goHome" onclick="location.reload()">Home</button>
   <div id="intro">
     <h2>Select Level</h2>
-    <button class="level-button" data-pairs="5">Level 1 (5 pairs)</button>
-    <button class="level-button" data-pairs="7">Level 2 (7 pairs)</button>
-    <button class="level-button" data-pairs="10">Level 3 (10 pairs)</button>
+    <button class="level-button" onclick="startGame(5)">Level 1 (5 pairs)</button>
+    <button class="level-button" onclick="startGame(7)">Level 2 (7 pairs)</button>
+    <button class="level-button" onclick="startGame(10)">Level 3 (10 pairs)</button>
   </div>
-
   <div id="counter" class="hidden">Moves: 0</div>
   <div class="game-board hidden" id="gameBoard"></div>
-
   <div id="messageBox">
     <div id="message"></div>
     <button id="playAgain">Play Again</button>
   </div>
-
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const flipSound = new Audio('flip.mp3');
-      const matchSound = new Audio('match.mp3');
-      const sounds = {
-        'AH': new Audio('short-a.mp3'),
-        'EH': new Audio('short-e.mp3'),
-        'IH': new Audio('short-i.mp3'),
-        'AW': new Audio('short-o.mp3'),
-        'UH': new Audio('short-u.mp3'),
-        'AY': new Audio('long-a.mp3'),
-        'EE': new Audio('long-e.mp3'),
-        'EYE': new Audio('long-i.mp3'),
-        'OH': new Audio('long-o.mp3'),
-        'YOU': new Audio('long-u.mp3')
-      };
-      const labelToImage = {
-        'AH': 'Short A.png',
-        'EH': 'Short E.png',
-        'IH': 'Short I.png',
-        'AW': 'Short O.png',
-        'UH': 'Short U.png',
-        'AY': 'Long A.png',
-        'EE': 'Long E.png',
-        'EYE': 'Long I.png',
-        'OH': 'Long O.png',
-        'YOU': 'Long U.png'
-      };
-
-      let bestMoves = localStorage.getItem('bestMoves') || null;
-      let bestTime = localStorage.getItem('bestTime') || null;
-      const allLabels = Object.keys(sounds);
-
-      let board = document.getElementById('gameBoard');
-      let counter = document.getElementById('counter');
-      let message = document.getElementById('message');
-      let messageBox = document.getElementById('messageBox');
-      let playAgainBtn = document.getElementById('playAgain');
-      let firstCardElement, secondCardElement, firstCardLabel, secondCardLabel, turns, matches, startTime;
-
-      function startGame(pairCount) {
-        document.getElementById('intro').style.display = 'none';
-        counter.classList.remove('hidden');
-        board.classList.remove('hidden');
-        messageBox.style.display = 'none';
-        message.textContent = '';
-
-        const selectedLabels = allLabels.slice(0, pairCount);
-        const cards = selectedLabels.flatMap(label => [{ label }, { label }]);
-        const shuffled = [...cards].sort(() => 0.5 - Math.random());
-
-        board.innerHTML = '';
-        turns = 0;
-        matches = 0;
-        startTime = Date.now();
-        counter.textContent = 'Moves: 0';
-
-        shuffled.forEach(card => {
-          const div = document.createElement('div');
-          div.className = 'card';
-          div.textContent = '?';
-          div.dataset.label = card.label;
-
-          div.addEventListener('click', () => {
-            if (div.classList.contains('matched') || div === firstCardElement || secondCardElement) return;
-
-            div.innerHTML = `<img src="${labelToImage[div.dataset.label]}" alt="${div.dataset.label}" style="max-width: 80%; max-height: 80%;" />`;
-            sounds[div.dataset.label]?.play();
-            flipSound.currentTime = 0;
-            flipSound.play();
-
-            if (!firstCardElement) {
-              firstCardElement = div;
-              firstCardLabel = div.dataset.label;
+    const flipSound = new Audio('flip.mp3');
+    const matchSound = new Audio('match.mp3');
+    let startTime, bestMoves = localStorage.getItem('bestMoves') || null, bestTime = localStorage.getItem('bestTime') || null;
+    const sounds = {
+      'AH': new Audio('short-a.mp3'),
+      'EH': new Audio('short-e.mp3'),
+      'IH': new Audio('short-i.mp3'),
+      'AW': new Audio('short-o.mp3'),
+      'UH': new Audio('short-u.mp3'),
+      'AY': new Audio('long-a.mp3'),
+      'EE': new Audio('long-e.mp3'),
+      'EYE': new Audio('long-i.mp3'),
+      'OH': new Audio('long-o.mp3'),
+      'YOU': new Audio('long-u.mp3')
+    };
+    const allLabels = Object.keys(sounds);
+    let board = document.getElementById('gameBoard');
+    let counter = document.getElementById('counter');
+    let message = document.getElementById('message');
+    let messageBox = document.getElementById('messageBox');
+    let playAgainBtn = document.getElementById('playAgain');
+    let firstCardElement, secondCardElement, firstCardLabel, secondCardLabel, turns, matches;
+    function startGame(pairCount) {
+      document.getElementById('intro').style.display = 'none';
+      counter.classList.remove('hidden');
+      board.classList.remove('hidden');
+      messageBox.style.display = 'none';
+      message.textContent = '';
+      const selectedLabels = allLabels.slice(0, pairCount);
+      const cards = selectedLabels.flatMap(label => [{ label }, { label }]);
+      const shuffled = [...cards].sort(() => 0.5 - Math.random());
+      board.innerHTML = '';
+      turns = 0;
+      matches = 0;
+      startTime = Date.now();
+      counter.textContent = 'Moves: 0';
+      shuffled.forEach(card => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.textContent = '?';
+        div.dataset.label = card.label;
+        div.addEventListener('click', () => {
+          if (div.classList.contains('matched') || div === firstCardElement || secondCardElement) return;
+          div.textContent = div.dataset.label;
+          sounds[div.dataset.label]?.play();
+          flipSound.currentTime = 0;
+          flipSound.play();
+          if (!firstCardElement) {
+            firstCardElement = div;
+            firstCardLabel = div.dataset.label;
+          } else {
+            secondCardElement = div;
+            secondCardLabel = div.dataset.label;
+            turns++;
+            counter.textContent = `Moves: ${turns}`;
+            if (firstCardLabel === secondCardLabel) {
+              firstCardElement.classList.add('matched');
+              secondCardElement.classList.add('matched');
+              matchSound.currentTime = 0;
+              matchSound.play();
+              matches++;
+              if (matches === pairCount) {
+                const endTime = Date.now();
+                const timeTaken = Math.round((endTime - startTime) / 1000);
+                let recordMsg = '';
+                if (!bestMoves || turns < bestMoves) {
+                  localStorage.setItem('bestMoves', turns);
+                  recordMsg += ' 🎯 New record for fewest moves!';
+                }
+                if (!bestTime || timeTaken < bestTime) {
+                  localStorage.setItem('bestTime', timeTaken);
+                  recordMsg += ' ⏱️ Fastest time yet!';
+                }
+                message.innerHTML = `<span style='color: #e47e00; font-weight: bold;'>🎉 Hooray!</span><br><span style='font-family: Avenir, sans-serif; color: #e47e00;'>You matched them all in ${turns} moves and ${timeTaken} seconds!</span>${recordMsg}`;
+                messageBox.style.display = 'block';
+              }
+              firstCardElement = null;
+              secondCardElement = null;
             } else {
-              secondCardElement = div;
-              secondCardLabel = div.dataset.label;
-              turns++;
-              counter.textContent = `Moves: ${turns}`;
-
-              if (firstCardLabel === secondCardLabel) {
-                firstCardElement.classList.add('matched');
-                secondCardElement.classList.add('matched');
-                matchSound.currentTime = 0;
-                matchSound.play();
-                matches++;
-
-                if (matches === pairCount) {
-                  const endTime = Date.now();
-                  const timeTaken = Math.round((endTime - startTime) / 1000);
-                  let recordMsg = '';
-                  if (!bestMoves || turns < bestMoves) {
-                    localStorage.setItem('bestMoves', turns);
-                    recordMsg += ' 🎯 New record for fewest moves!';
-                  }
-                  if (!bestTime || timeTaken < bestTime) {
-                    localStorage.setItem('bestTime', timeTaken);
-                    recordMsg += ' ⏱️ Fastest time yet!';
-                  }
-                  message.innerHTML = `<span style='color: #e47e00; font-weight: bold;'>🎉 Hooray!</span><br><span style='font-family: Avenir, sans-serif; color: #e47e00;'>You matched them all in ${turns} moves and ${timeTaken} seconds!</span>${recordMsg}`;
-                  messageBox.style.display = 'block';
+              setTimeout(() => {
+                if (firstCardElement && secondCardElement) {
+                  firstCardElement.textContent = '?';
+                  secondCardElement.textContent = '?';
                 }
                 firstCardElement = null;
                 secondCardElement = null;
-              } else {
-                setTimeout(() => {
-                  if (firstCardElement && secondCardElement) {
-                    firstCardElement.innerHTML = '?';
-                    secondCardElement.innerHTML = '?';
-                  }
-                  firstCardElement = null;
-                  secondCardElement = null;
-                }, 1000);
-              }
+              }, 1000);
             }
-          });
-
-          board.appendChild(div);
+          }
         });
-      }
-
-      document.querySelectorAll('.level-button').forEach(button => {
-        button.addEventListener('click', () => {
-          const pairs = parseInt(button.getAttribute('data-pairs'));
-          startGame(pairs);
-        });
+        board.appendChild(div);
       });
-
-      playAgainBtn.addEventListener('click', () => {
-        document.getElementById('intro').style.display = 'flex';
-        board.classList.add('hidden');
-        counter.classList.add('hidden');
-        messageBox.style.display = 'none';
-        board.innerHTML = '';
-      });
+    }
+    playAgainBtn.addEventListener('click', () => {
+      document.getElementById('intro').style.display = 'flex';
+      board.classList.add('hidden');
+      counter.classList.add('hidden');
+      messageBox.style.display = 'none';
+      board.innerHTML = '';
     });
   </script>
 </body>
